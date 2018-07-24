@@ -1,0 +1,24 @@
+<!--
+  Generated template for the OrdenesPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>ordenes</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list >
+    <button ion-item *ngFor="let orden of ordenes" (click)="verDetalle(orden)" >
+      {{orden._id }} {{ orden.create_at | date}}
+    </button>
+  </ion-list>
+
+</ion-content>
