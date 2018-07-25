@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, LoadingController, Loading } from 'ionic-angular';
 import { ProductoProvider } from '../../providers/producto/producto';
 import { Producto } from '../../shared/models/producto.model';
 import { CarritoProvider } from '../../providers/carrito/carrito';
@@ -13,14 +13,17 @@ export class HomePage {
 
   pagina = 1;
   productos:Producto[] = [];
+  loading: Loading;
   // totalCarrito: number = 0;
 
   constructor(public navCtrl: NavController,
               public _productService: ProductoProvider,
               public _carritoService: CarritoProvider,
-              public _usuarioService: UsuarioProvider
+              public _usuarioService: UsuarioProvider,
+              public loadingCtrl: LoadingController,
   ) {
     console.log('Constructor home');
+    this.presentLoadingDefault();
   }
 
   // https://blog.ionicframework.com/navigating-lifecycle-events/
@@ -43,7 +46,7 @@ export class HomePage {
       this.productos.push(...datos.data);
     }, error => {
       console.error('Ooops!!', JSON.stringify(error));
-    });
+    }, ()=> this.loading.dismiss());
   }
 
   doInfinite(infiniteScroll) {
@@ -66,5 +69,14 @@ export class HomePage {
     await this._usuarioService.cerrarSesion();
     await this._carritoService.getStorage();
   }
+
+  presentLoadingDefault() {
+    this.loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+  
+    this.loading.present();
+  }
+  
 
 }
