@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, Loading } from 'ionic-angular';
 import { ProductoProvider } from '../../providers/producto/producto';
 import { Producto } from '../../shared/models/producto.model';
 import { Linea } from '../../shared/models/linea.model';
@@ -21,13 +21,16 @@ export class PorCategoriasPage {
   pagina = 1;
   linea: Linea;
   productos: Producto[] = [];
+  loading: Loading;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
-    public _productService: ProductoProvider
+    public _productService: ProductoProvider,
+    public loadingCtrl: LoadingController,
   ) {
 
     this.linea = navParams.get('linea');
+    this.presentLoadingDefault();
   }
 
   ionViewDidLoad() {
@@ -40,7 +43,7 @@ export class PorCategoriasPage {
       this.productos.push( ...datos.data );
     }, error => {
       console.log('Ooops!!!', error);
-    });
+    }, ()=> this.loading.dismiss());
   }
 
   doInfinite(infiniteScroll) {
@@ -57,6 +60,14 @@ export class PorCategoriasPage {
 
     this.navCtrl.push('ProductoPage', { producto });
 
+  }
+
+  presentLoadingDefault() {
+    this.loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+  
+    this.loading.present();
   }
 
 }

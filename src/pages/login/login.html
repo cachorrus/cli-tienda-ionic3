@@ -12,22 +12,50 @@
     <ion-title>Login</ion-title>
   </ion-navbar>
 
+
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="option">
+      <ion-segment-button value="Login">
+        Login
+      </ion-segment-button>
+      <ion-segment-button value="Register">
+        Register
+      </ion-segment-button>  
+    
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 
 <ion-content padding>
 
-  <ion-list padding-bottom>
-    <ion-item>
-      <ion-label floating >Email</ion-label>
-      <ion-input type="email" [(ngModel)]="email"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label floating >Password</ion-label>
-      <ion-input type="password" [(ngModel)]="password"></ion-input>
-    </ion-item>    
-  </ion-list>
+  <div [ngSwitch]="option"> 
 
-  <button ion-button block (click)="logIn()" [disabled]=" email.length < 5 || password.length < 3">Log In</button>
+    <ion-list padding-bottom *ngSwitchCase="'Login'">
+      <ion-item>
+        <ion-label floating >Email</ion-label>
+        <ion-input type="email" [(ngModel)]="email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating >Password</ion-label>
+        <ion-input type="password" [(ngModel)]="password"></ion-input>
+      </ion-item>  
+      
+      <button ion-button block (click)="logIn()" [disabled]=" email.length < 5 || password.length < 3">{{ option }}</button>
+    </ion-list>        
+
+    <ion-list padding-bottom *ngSwitchCase="'Register'">
+      <ion-item>
+        <ion-label floating >Email</ion-label>
+        <ion-input type="email" [(ngModel)]="emailRegister"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating >Password</ion-label>
+        <ion-input type="password" [(ngModel)]="passwordRegister"></ion-input>
+      </ion-item>  
+      <button ion-button block color="secondary" (click)="register()" [disabled]=" emailRegister.length < 5 || passwordRegister.length < 3">{{ option }}</button>  
+    </ion-list>    
+
+  </div> 
 
 </ion-content>

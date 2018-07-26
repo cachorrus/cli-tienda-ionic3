@@ -18,6 +18,10 @@ export class LoginPage {
 
   email: string = "";
   password: string = "";
+  emailRegister: string = "";
+  passwordRegister: string = "";
+
+  option: string = "Login";
 
   private loading: Loading;
 
@@ -33,36 +37,39 @@ export class LoginPage {
     console.log('ionViewDidLoad LoginPage');
   }
 
-  logIn() {
+  loadingPresent() {
     this.loading = this.loadingCtrl.create({
       content: 'Please wait...',
       dismissOnPageChange: true,
     });
   
-    this.loading.present().then( ()=> {
-      this.loginService();
-    });
-
+    this.loading.present();
   }
 
-  private loginService() {
+  alertPresent(mensaje: string, title: string) {
+    this.alertCtrl.create({
+      
+      message: mensaje,
+      title: title,
+      buttons: ['Ok'],
+    }).present();
+  }
+
+  public logIn() {
+    this.loadingPresent();
     this._usuarioService.login(this.email,this.password)
         .subscribe( async (resp) => {                    
-          
-          this.loading.dismissAll();
+                   
           let { token } = resp.data;
           try {
             await this._usuarioService.setToken(token);
-            // const tokenStorage = await this._usuarioService.getToken();
-            // console.log(tokenStorage);
             await this.viewCtrl.dismiss(true);  //error en web con doble scape
             
           } catch (error) {
             console.log(error);
-          }          
+          }           
 
         }, err =>{ //error en _usuarioService
-
           this.loading.dismissAll();
           console.log(err);
           let mensaje = "Intente de nuevo";
@@ -70,13 +77,28 @@ export class LoginPage {
           if (err.error && err.error.message){
             mensaje = err.error.message;
           }
+          this.alertPresent(mensaje, 'Ooooops!!');
+          
+        }, ()=> this.loading.dismissAll());    
+  }
 
-          this.alertCtrl.create({
-            
-            message: mensaje,
-            title: 'Oooops!!',
-            buttons: ['Ok'],
-          }).present();
-        });    
+  register(){
+    this.loadingPresent();
+    this._usuarioService.register(this.emailRegister, this.passwordRegister)
+          .subscribe( (resp:any) => {
+            this.option = 'Login';
+            this.alertPresent('El usuario ' + resp.data.correo + 'fue registrado', 'Bienvenido prro');
+          }, err => {
+            console.log(err);
+            this.loading.dismissAll();
+            let mensaje = "Intente de nuevo";
+
+            if (err.error && err.error.message){
+              mensaje = err.error.message;
+            }
+
+            this.alertPresent(mensaje, 'Hubo un problema');
+          }, ()=> this.loading.dismissAll());
+
   }
 }

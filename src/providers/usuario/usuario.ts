@@ -33,6 +33,17 @@ export class UsuarioProvider {
 
     return this.http.post(url, body);
   }
+
+  register( correo: string, password: string): Observable<any> {
+    const body = {
+      correo,
+      password,
+    }
+
+    const url = `${API_TIENDA}auth/register`;
+
+    return this.http.post(url, body);
+  }
   
   async setToken(token: string) {
     await this.storage.set('token',token).then( ()=> this.activo = true);    
